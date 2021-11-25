@@ -7,12 +7,22 @@ void main() {
   runApp(JsonExample());
 }
 
-class JsonExample extends StatelessWidget {
+class JsonExample extends StatefulWidget {
+  @override
+  _JsonExampleState createState() => _JsonExampleState();
+}
+
+class _JsonExampleState extends State<JsonExample> {
   final _getApi=GetApi();
+@override
+  void initState() {
+  _getApi.getModelsData();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
 
-    _getApi.getModelsData();
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Json Example',
@@ -21,13 +31,21 @@ class JsonExample extends StatelessWidget {
       ),
       home: Scaffold(
           appBar: AppBar(title: Text("Json Example")),
-          body: FutureBuilder<Models>(
+          body: FutureBuilder<List<Models>>(
               future: _getApi.getModelsData(),
               builder: (context, snapshot) {
                 if (snapshot.hasData)
                   return ListView.builder(
+                    itemCount: snapshot.data!.length,
                     itemBuilder: (context, int index){
-                      return Text("${snapshot.data!.title}");
+                      return Card(
+                        child: Column(
+                          children: [
+                            Text("${snapshot.data![index].title}"),
+                            SizedBox(height: 10,),
+                          ],
+                        ),
+                      );
                     },
 
                   );
